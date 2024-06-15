@@ -1,6 +1,8 @@
+// NewMember.js
 import React, { useState } from 'react';
 import Location from './location';
 import DataValid from './datavalid';
+import saveMemberToDatabase from './connection';
 
 const NewMember = () => {
     const [firstName, setFirstName] = useState('');
@@ -17,7 +19,7 @@ const NewMember = () => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (firstName.length === 0 || lastName.length === 0) {
@@ -25,23 +27,6 @@ const NewMember = () => {
             return;
         }
 
-        let existingMembers = [];
-
-        // Retrieve existing members from local storage
-        const membersFromStorage = localStorage.getItem('members');
-        if (membersFromStorage) {
-            try {
-                existingMembers = JSON.parse(membersFromStorage);
-                if (!Array.isArray(existingMembers)) {
-                    throw new Error('Invalid members data');
-                }
-            } catch (error) {
-                console.error('Error parsing JSON from local storage:', error);
-                existingMembers = [];
-            }
-        }
-
-        // Create new member object
         const newMember = {
             firstName,
             lastName,
@@ -50,14 +35,12 @@ const NewMember = () => {
             city,
         };
 
-        // Save new member to local storage
-        existingMembers.push(newMember);
-        localStorage.setItem('members', JSON.stringify(existingMembers));
-        console.log('Saved members:', JSON.stringify(existingMembers)); // Log the saved data
-
-        // Handle successful submission
-        console.log('Form submitted successfully!');
-        console.log('Saved data:', newMember);
+        try {
+            await saveMemberToDatabase(newMember);
+            console.log('Form submitted successfully!');
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
 
         // Clear all fields
         setFirstName('');

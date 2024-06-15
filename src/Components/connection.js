@@ -1,5 +1,10 @@
-// Connection.js
-import { sql } from "@vercel/postgres";
+// src/Components/connection.js
+import { sql, config } from "@vercel/postgres";
+
+// Load the connection string from the environment variable
+config({
+    connectionString: process.env.REACT_APP_POSTGRES_URL,
+});
 
 const saveMemberToDatabase = async (member) => {
     try {
