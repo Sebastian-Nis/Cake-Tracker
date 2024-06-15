@@ -1,15 +1,10 @@
 // src/Components/connection.js
-import { sql, config } from "@vercel/postgres";
-
-// Load the connection string from the environment variable
-config({
-    connectionString: process.env.REACT_APP_POSTGRES_URL,
-});
+import pool from './database';
 
 const saveMemberToDatabase = async (member) => {
     try {
         const { firstName, lastName, birthday, country, city } = member;
-        await sql`
+        await pool.sql`
             INSERT INTO members (first_name, last_name, birthday, country, city)
             VALUES (${firstName}, ${lastName}, ${birthday}, ${country}, ${city})
         `;
