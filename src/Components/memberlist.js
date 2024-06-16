@@ -7,14 +7,19 @@ const MemberList = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    // Fetch members data from the backend
     const fetchMembers = async () => {
       try {
-        const response = await fetch('/api/members');
+        const response = await fetch('/api/members', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
         if (!response.ok) {
           throw new Error('Failed to fetch members');
         }
         const data = await response.json();
+        console.log('Members fetched:', data);
         setMembers(data);
         setFilteredMembers(data);
       } catch (error) {
