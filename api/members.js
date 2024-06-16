@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres';
+import { db } from '@vercel/postgres';
 
 export default async function handler(req, res) {
   console.log('Request method:', req.method);
@@ -9,12 +9,15 @@ export default async function handler(req, res) {
 
     try {
       console.log('Connecting to the database...');
+      const client = await db.connect();
+
       console.log('Inserting member:', { firstName, lastName, birthday, country, city });
 
-      await sql`
+      await client.sql`
         INSERT INTO members (first_name, last_name, birthday, country, city)
         VALUES (${firstName}, ${lastName}, ${birthday}, ${country}, ${city})
       `;
+      client.release();
       console.log('Member inserted successfully');
       res.status(200).send('Member saved to database');
     } catch (error) {
@@ -24,9 +27,12 @@ export default async function handler(req, res) {
   } else if (req.method === 'GET') {
     try {
       console.log('Fetching members...');
-      const result = await sql`SELECT * FROM members`;
-      console.log('Fetched members:', result);
-      res.status(200).json(result);
+      const client = await db.connect();
+      const result = await client.sql`SELECT * FROM members`;
+      client.release();
+
+      console.log('Fetched members:', result.rows);
+      res.status(200).json(result.rows);
     } catch (error) {
       console.error('Error fetching members:', error);
       res.status(500).send(`Error fetching members: ${error.message}`);
