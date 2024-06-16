@@ -42,7 +42,8 @@ const NewMember = () => {
         body: JSON.stringify(newMember),
       });
       if (!response.ok) {
-        throw new Error('Failed to save member to the database');
+        const errorText = await response.text();
+        throw new Error(errorText);
       }
       console.log('Form submitted successfully!');
     } catch (error) {
