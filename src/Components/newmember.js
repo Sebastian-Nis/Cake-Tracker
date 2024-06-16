@@ -41,11 +41,11 @@ const NewMember = () => {
         },
         body: JSON.stringify(newMember),
       });
+      const responseData = await response.json();
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText);
+        throw new Error(responseData.error || 'Failed to submit form');
       }
-      console.log('Form submitted successfully!');
+      console.log('Form submitted successfully!', responseData.message);
     } catch (error) {
       console.error('Error submitting form:', error);
     }

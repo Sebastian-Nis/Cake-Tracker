@@ -8,18 +8,19 @@ const MemberList = () => {
 
   const fetchMembers = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/members', {
+      console.log('Fetching data...');
+      const response = await fetch('/api/members', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      if (!response.ok) {
-        throw new Error('Failed to fetch members');
-      }
-      const data = await response.json();
-      setMembers(data);
-      setFilteredMembers(data);
+
+      const jsonResponse = await response.json(); // Parse the response as JSON
+      console.log('Response JSON:', jsonResponse);
+
+      setMembers(jsonResponse);
+      setFilteredMembers(jsonResponse);
     } catch (error) {
       console.error('Error fetching members:', error);
     }
