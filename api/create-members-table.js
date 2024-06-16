@@ -4,8 +4,14 @@ const pool = createPool({
 });
 
 module.exports = async (req, res) => {
+  if (req.method !== 'POST') {
+    return res.status(405).send('Method Not Allowed');
+  }
+
   try {
     const client = await pool.connect();
+    console.log('Connected to the database');
+
     await client.sql`
       CREATE TABLE IF NOT EXISTS members (
         id SERIAL PRIMARY KEY,
@@ -17,6 +23,8 @@ module.exports = async (req, res) => {
       );
     `;
     client.release();
+    console.log('Table created successfully');
+
     res.status(200).send('Table created successfully');
   } catch (error) {
     console.error('Error creating table:', error.stack);
