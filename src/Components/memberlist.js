@@ -1,45 +1,30 @@
 import React, { useEffect, useState } from 'react';
 
-// Function to clear cookies
-const clearCookies = () => {
-  const cookies = document.cookie.split(";");
-  for (let i = 0; i < cookies.length; i++) {
-    const cookie = cookies[i];
-    const eqPos = cookie.indexOf("=");
-    const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
-  }
-};
-
 const MemberList = () => {
   const [members, setMembers] = useState([]);
   const [filteredMembers, setFilteredMembers] = useState([]);
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    // Clear cookies before fetching members
-    clearCookies();
-
-    const fetchMembers = async () => {
-      try {
-        const response = await fetch('/api/members', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json', // Ensure only necessary headers
-          },
-        });
-        if (!response.ok) {
-          throw new Error('Failed to fetch members');
-        }
-        const data = await response.json();
-        setMembers(data);
-        setFilteredMembers(data);
-      } catch (error) {
-        console.error('Error fetching members:', error);
+  const fetchMembers = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/members`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch members');
       }
-    };
+      const data = await response.json();
+      setMembers(data);
+      setFilteredMembers(data);
+    } catch (error) {
+      console.error('Error fetching members:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchMembers();
   }, []);
 
