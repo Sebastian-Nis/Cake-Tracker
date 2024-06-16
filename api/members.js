@@ -1,12 +1,8 @@
-import { db } from '@vercel/postgres';
+const { db } = require('@vercel/postgres');
 
-export default async function handler(req, res) {
-  console.log('Request method:', req.method);
-  console.log('Request headers:', req.headers);
-
+module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { firstName, lastName, birthday, country, city } = req.body;
-    console.log('Request body:', req.body);
 
     try {
       const client = await db.connect();
@@ -33,4 +29,4 @@ export default async function handler(req, res) {
   } else {
     res.status(405).json({ error: 'Method Not Allowed' });
   }
-}
+};

@@ -8,7 +8,6 @@ const MemberList = () => {
 
   const fetchMembers = async () => {
     try {
-      console.log('Fetching data...');
       const response = await fetch('/api/members', {
         method: 'GET',
         headers: {
@@ -16,9 +15,7 @@ const MemberList = () => {
         },
       });
 
-      const jsonResponse = await response.json(); // Parse the response as JSON
-      console.log('Response JSON:', jsonResponse);
-
+      const jsonResponse = await response.json();
       setMembers(jsonResponse);
       setFilteredMembers(jsonResponse);
     } catch (error) {
