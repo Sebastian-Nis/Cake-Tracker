@@ -4,16 +4,23 @@ const pool = createPool({
 });
 
 module.exports = async (req, res) => {
+  console.log('Request method:', req.method);
   if (req.method === 'POST') {
     const { firstName, lastName, birthday, country, city } = req.body;
+    console.log('Request body:', req.body);
 
     try {
       const client = await pool.connect();
+      console.log('Connected to the database');
+
+      console.log('Inserting member:', { firstName, lastName, birthday, country, city });
+
       await client.sql`
         INSERT INTO members (first_name, last_name, birthday, country, city)
         VALUES (${firstName}, ${lastName}, ${birthday}, ${country}, ${city})
       `;
       client.release();
+      console.log('Member inserted successfully');
 
       res.status(200).send('Member saved to database');
     } catch (error) {
@@ -23,6 +30,8 @@ module.exports = async (req, res) => {
   } else if (req.method === 'GET') {
     try {
       const client = await pool.connect();
+      console.log('Connected to the database');
+
       const result = await client.sql`SELECT * FROM members`;
       client.release();
 
