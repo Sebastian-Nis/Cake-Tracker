@@ -1,8 +1,6 @@
-// src/NewMember.js
 import React, { useState } from 'react';
 import Location from './location';
 import DataValid from './datavalid';
-import saveMemberToDatabase from './connection';
 
 const NewMember = () => {
   const [firstName, setFirstName] = useState('');
@@ -36,7 +34,16 @@ const NewMember = () => {
     };
 
     try {
-      await saveMemberToDatabase(newMember);
+      const response = await fetch('/api/members', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newMember),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to save member to the database');
+      }
       console.log('Form submitted successfully!');
     } catch (error) {
       console.error('Error submitting form:', error);
