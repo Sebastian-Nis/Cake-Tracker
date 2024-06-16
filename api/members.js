@@ -8,6 +8,7 @@ export default async function handler(req, res) {
     console.log('Request body:', req.body);
 
     try {
+      console.log('Connecting to the database...');
       console.log('Inserting member:', { firstName, lastName, birthday, country, city });
 
       await sql`
@@ -17,16 +18,17 @@ export default async function handler(req, res) {
       console.log('Member inserted successfully');
       res.status(200).send('Member saved to database');
     } catch (error) {
-      console.error('Error saving member to database:', error.stack);
+      console.error('Error saving member to database:', error);
       res.status(500).send(`Error saving member to database: ${error.message}`);
     }
   } else if (req.method === 'GET') {
     try {
-      console.log('Fetching members');
+      console.log('Fetching members...');
       const result = await sql`SELECT * FROM members`;
+      console.log('Fetched members:', result);
       res.status(200).json(result);
     } catch (error) {
-      console.error('Error fetching members:', error.stack);
+      console.error('Error fetching members:', error);
       res.status(500).send(`Error fetching members: ${error.message}`);
     }
   } else {
